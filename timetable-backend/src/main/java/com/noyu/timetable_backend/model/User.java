@@ -2,13 +2,14 @@ package com.noyu.timetable_backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
-
-
 
 @Entity
 @Table(name = "users")
@@ -27,6 +28,14 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @ManyToOne(fetch = FetchType.LAZY) // ユーザー対学部
+    @JoinColumn(name = "faculty_id", nullable = true)
+    private Faculty faculty;
+
+    @ManyToOne(fetch = FetchType.LAZY) // ユーザー対学科
+    @JoinColumn(name = "department_id", nullable = true)
+    private Department department;
+
     public User() {
 
     }
@@ -35,6 +44,14 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User(String username, String email, String password, Faculty faculty, Department department) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.faculty = faculty;
+        this.department = department;
     }
 
     public Long getId() {
@@ -69,14 +86,32 @@ public class User {
         this.password = password;
     }
 
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
-               Objects.equals(username, user.username) &&
-               Objects.equals(email, user.email);
+                Objects.equals(username, user.username) &&
+                Objects.equals(email, user.email);
     }
 
     @Override
@@ -87,9 +122,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-               "id = " + id +
-               ", username = " + username + '\'' +
-               ", email = " + email + '\'' +
-               "}";
+                "id = " + id +
+                ", username = " + username + '\'' +
+                ", email = " + email + '\'' +
+                ", faculty_id=" + (faculty != null ? faculty.getId() : null) +
+                ", department_id=" + (department != null ? department.getId() : null) +
+                "}";
     }
 }
