@@ -8,10 +8,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class FacultyService {
-    
+
     private final FacultyRepository facultyRepository;
 
     @Autowired
@@ -24,8 +23,8 @@ public class FacultyService {
         List<Faculty> faculties = facultyRepository.findAll(); // リポジトリからすべてのFacultyエンティティを取得
         // FacultyエンティティのリストをFacultyDTOのリストに変換
         return faculties.stream()
-                       .map((this::convertToDTO))
-                       .collect(Collectors.toList());
+                .map((this::convertToDTO))
+                .collect(Collectors.toList());
     }
 
     private FacultyDTO convertToDTO(Faculty faculty) {
