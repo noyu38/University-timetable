@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.noyu.timetable_backend.dto.DepartmentDTO;
 
+@Service
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
