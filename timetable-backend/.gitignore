@@ -38,4 +38,4 @@ build/
 ### .class ###
 *.class
 
-application.properties
+.properties
