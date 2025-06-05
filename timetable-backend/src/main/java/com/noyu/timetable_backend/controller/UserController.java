@@ -31,7 +31,7 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService) {
-        this.userService = userService
+        this.userService = userService;
     }
 
     @PutMapping("/{username}/education")
