@@ -1,14 +1,20 @@
 package com.noyu.timetable_backend.service;
 
 // import org.apache.catalina.User;
-import com.noyu.timetable_backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.noyu.timetable_backend.model.User;
+import com.noyu.timetable_backend.model.Faculty;
+import com.noyu.timetable_backend.model.Department;
 import com.noyu.timetable_backend.dto.SignUpRequestDTO;
+import com.noyu.timetable_backend.dto.UserEducationUpdateRequestDTO;
+import com.noyu.timetable_backend.repository.DepartmentRepository;
+import com.noyu.timetable_backend.repository.FacultyRepository;
 import com.noyu.timetable_backend.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 class UserAlreadyExistsException extends RuntimeException {
@@ -22,11 +28,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FacultyRepository facultyRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            FacultyRepository facultyRepository,
+            DepartmentRepository departmentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.facultyRepository = facultyRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Transactional
@@ -49,5 +62,30 @@ public class UserService {
 
         // ユーザーをデータベースに保存
         return userRepository.save(newUser);
+    }
+
+    @Transactional
+    public User updateUserEducation(String username, UserEducationUpdateRequestDTO requestDTO) {
+        // ユーザー名でエンティティを取得
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません。: " + username));
+
+        // DTOから学部IDを取得し、学部エンティティを取得
+        Faculty faculty = facultyRepository.findById(requestDTO.getFacultyId())
+                .orElseThrow(() -> new EntityNotFoundException("学部が見つかりません: " + requestDTO.getFacultyId()));
+
+        // DTOから学科IDを取得し、学科エンティティを取得
+        Department department = departmentRepository.findById(requestDTO.getDepartmentId())
+                .orElseThrow(() -> new EntityNotFoundException("学科が見つかりません: " + requestDTO.getDepartmentId()));
+
+        if (!department.getFaculty().getId().equals(faculty.getId())) {
+            throw new IllegalArgumentException(
+                    "選択された学科「" + department.getName() + "」は学部「" + faculty.getName() + "」に所属していません。");
+        }
+
+        user.setFaculty(faculty);
+        user.setDepartment(department);
+
+        return userRepository.save(user);
     }
 }
