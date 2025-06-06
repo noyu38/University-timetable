@@ -61,15 +61,15 @@ public class UserController {
         }
     }
 
-    @PutMapping("/me/education")
-    public ResponseEntity<?> updateCurrentUserEducation(
-            @AuthenticationPrincipal UserDetails currentUser,
-            @RequestBody UserEducationUpdateRequestDTO requestDTO) {
+    // @PutMapping("/me/education")
+    // public ResponseEntity<?> updateCurrentUserEducation(
+    // @AuthenticationPrincipal UserDetails currentUser,
+    // @RequestBody UserEducationUpdateRequestDTO requestDTO) {
 
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("認証されていません。");
-        }
-        String username = currentUser.getUsername();
-        return ResponseEntity.ok("学部・学科情報が更新されました。");
-    }
+    // if (currentUser == null) {
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("認証されていません。");
+    // }
+    // String username = currentUser.getUsername();
+    // return ResponseEntity.ok("学部・学科情報が更新されました。");
+    // }
 }
