@@ -3,19 +3,17 @@ package com.noyu.timetable_backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noyu.timetable_backend.dto.UserEducationUpdateRequestDTO;
-import com.noyu.timetable_backend.model.User;
 import com.noyu.timetable_backend.service.UserService;
+import com.noyu.timetable_backend.dto.UserDTO;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -34,7 +32,7 @@ public class UserController {
 
     @PutMapping("/{username}/education")
     public ResponseEntity<?> updateUserEducation(
-            // @PathVaeiable URLの{username}部分を受け取る
+            // @PathVariable URLの{username}部分を受け取る
             // @RequestBody HTTPリクエストのボディのJSONをUserEducationUpdateRequestDTOオブジェクトに変換して受け取る
             @PathVariable String username,
             @RequestBody UserEducationUpdateRequestDTO requestDTO) {
@@ -45,9 +43,9 @@ public class UserController {
                     requestDTO.getFacultyId(),
                     requestDTO.getDepartmentId());
 
-            User updatedUser = userService.updateUserEducation(username, requestDTO);
+            UserDTO updatedUserDTO = userService.updateUserEducation(username, requestDTO);
 
-            return ResponseEntity.ok(updatedUser);
+            return ResponseEntity.ok(updatedUserDTO);
         } catch (EntityNotFoundException e) {
             logger.error("エンティティが見つかりません: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

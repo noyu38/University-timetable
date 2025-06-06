@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.noyu.timetable_backend.model.User;
-import com.noyu.timetable_backend.model.Faculty;
-import com.noyu.timetable_backend.model.Department;
+import com.noyu.timetable_backend.dto.UserDTO;
+import com.noyu.timetable_backend.dto.DepartmentDTO;
+import com.noyu.timetable_backend.dto.FacultyDTO;
 import com.noyu.timetable_backend.dto.SignUpRequestDTO;
 import com.noyu.timetable_backend.dto.UserEducationUpdateRequestDTO;
+import com.noyu.timetable_backend.model.Department;
+import com.noyu.timetable_backend.model.Faculty;
+import com.noyu.timetable_backend.model.User;
 import com.noyu.timetable_backend.repository.DepartmentRepository;
 import com.noyu.timetable_backend.repository.FacultyRepository;
 import com.noyu.timetable_backend.repository.UserRepository;
@@ -17,14 +20,36 @@ import com.noyu.timetable_backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException(String message) {
-        super(message);
-    }
-}
-
 @Service
 public class UserService {
+
+    static class UserAlreadyExistsException extends RuntimeException {
+        public UserAlreadyExistsException(String message) {
+            super(message);
+        }
+    }
+
+    private UserDTO convertToUserDTO(User user) {
+        if (user == null) {
+            return null;
+        }
+        FacultyDTO facultyDTO = null;
+        if (user.getFaculty() != null) {
+            facultyDTO = new FacultyDTO(user.getFaculty().getId(), user.getFaculty().getName());
+        }
+
+        DepartmentDTO departmentDTO = null;
+        if (user.getDepartment() != null) {
+            departmentDTO = new DepartmentDTO(user.getDepartment().getId(), user.getDepartment().getName());
+        }
+
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                facultyDTO,
+                departmentDTO);
+    }
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -65,7 +90,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUserEducation(String username, UserEducationUpdateRequestDTO requestDTO) {
+    public UserDTO updateUserEducation(String username, UserEducationUpdateRequestDTO requestDTO) {
         // ユーザー名でエンティティを取得
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません。: " + username));
@@ -85,7 +110,8 @@ public class UserService {
 
         user.setFaculty(faculty);
         user.setDepartment(department);
+        User updateUser = userRepository.save(user);
 
-        return userRepository.save(user);
+        return convertToUserDTO(updateUser);
     }
 }
