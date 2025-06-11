@@ -2,12 +2,13 @@ package com.noyu.timetable_backend.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.noyu.timetable_backend.model.Course;
 
 @Repository
-public interface CourseRepository {
+public interface CourseRepository extends JpaRepository<Course, Long> {
 
     /**
      * 指定された学科IDに所属する授業をすべて検索
