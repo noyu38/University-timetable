@@ -39,7 +39,7 @@ public class CourseService {
     // CourseエンティティをCourseDTOに変換
     private CourseDTO convertToDTO(Course course) {
         Long departmentId = (course.getDepartment() != null) ? course.getDepartment().getId() : null;
-        String departmentName = (course.getDepartment().getName() != null) ? course.getDepartment().getName() : null;
+        String departmentName = (course.getDepartment().getName() != null) ? course.getDepartment().getName() : "共通";
         return new CourseDTO(
                 course.getId(),
                 course.getName(),
