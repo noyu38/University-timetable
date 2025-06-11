@@ -36,12 +36,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        logger.info("AuthTokenFilter: リクエスト URI -> {}", request.getRequestURI());
         try {
             // リクエストヘッダーからJWTを取得
             String jwt = parseJwt(request);
 
+            logger.info("AuthTokenFilter: パースされたJWT -> {}", jwt);
+
             // JWTが存在するか
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+
+                logger.info("AuthTokenFilter: JWTの検証に成功しました。");
                 // JWTからユーザー名を取得
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
@@ -58,6 +64,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 // SecurityContextHolderに認証情報を設定
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                logger.info("AuthTokenFilter: SecurityContextHolderに認証情報を設定しました。");
+            } else {
+                logger.warn("AuthTokenFilter: JWTが見つからない、または無効です。");
             }
         } catch (Exception e) {
             logger.error("ユーザー認証を設定できません: {}", e.getMessage());
@@ -69,6 +79,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
+
+        logger.info("AuthTokenFilter: Authorizationヘッダー -> {}", headerAuth);
 
         // ヘッダーに"Bearer"という文字列が含まれていれば、その後ろの部分を返す"
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
