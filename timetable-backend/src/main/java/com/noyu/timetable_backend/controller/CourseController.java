@@ -31,7 +31,7 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAvailableCourses(@AuthenticationPrincipal UserDetails currentUser) {
+    public ResponseEntity<?> getAvailableCourses(@AuthenticationPrincipal UserDetails currentUser) {
         // @AuthenticationPrincipal ログインしているユーザーの情報を取得
         if (currentUser == null) {
             return ResponseEntity.status(401).build();
@@ -43,14 +43,14 @@ public class CourseController {
 
             if (user.getDepartment() == null) {
                 // ? いったんBad Requestを返してるけど、もしかしたら共通科目だけを返した方がいいかも？
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().body("学部・学科が設定されていません。");
             }
 
             Long departmentId = user.getDepartment().getId();
             List<CourseDTO> courses = courseService.getAvailableCourses(departmentId);
             return ResponseEntity.ok(courses);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(404).body("ユーザー情報が見つかりません。");
         }
     }
 }
