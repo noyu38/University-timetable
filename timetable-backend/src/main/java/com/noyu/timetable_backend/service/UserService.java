@@ -114,4 +114,9 @@ public class UserService {
 
         return convertToUserDTO(updateUser);
     }
+
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません: " + username));
+    }
 }
