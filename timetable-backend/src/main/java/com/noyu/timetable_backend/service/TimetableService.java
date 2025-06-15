@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.noyu.timetable_backend.dto.AddTimetableSlotRequestDTO;
 import com.noyu.timetable_backend.dto.CourseDTO;
 import com.noyu.timetable_backend.dto.TimetableSlotDTO;
 import com.noyu.timetable_backend.model.User;
+import com.noyu.timetable_backend.model.Course;
 import com.noyu.timetable_backend.model.TimetableSlot;
+import com.noyu.timetable_backend.repository.CourseRepository;
 import com.noyu.timetable_backend.repository.TimetableSlotRepository;
 import com.noyu.timetable_backend.repository.UserRepository;
 
@@ -21,11 +24,14 @@ public class TimetableService {
 
     private final TimetableSlotRepository timetableSlotRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public TimetableService(TimetableSlotRepository timetableSlotRepository, UserRepository userRepository) {
+    public TimetableService(TimetableSlotRepository timetableSlotRepository, UserRepository userRepository,
+            CourseRepository courseRepository) {
         this.timetableSlotRepository = timetableSlotRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +67,25 @@ public class TimetableService {
                 slot.getDayOfWeek(),
                 slot.getPeriod(),
                 courseDTO);
+    }
+
+    @Transactional
+    public TimetableSlotDTO addSlotToTimetable(String username, AddTimetableSlotRequestDTO requestDTO) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません: " + requestDTO.getCourseId()));
+
+        Course course = courseRepository.findById(requestDTO.getCourseId())
+                .orElseThrow(() -> new EntityNotFoundException("授業が見つかりません ID: " + requestDTO.getCourseId()));
+
+        TimetableSlot newSlot = new TimetableSlot();
+        newSlot.setUser(user);
+        newSlot.setCourse(course);
+        newSlot.setDayOfWeek(requestDTO.getDayOfWeek());
+        newSlot.setPeriod(requestDTO.getPeriod());
+
+        TimetableSlot savedSlot = timetableSlotRepository.save(newSlot);
+
+        return convertToDTO(savedSlot);
     }
 }
