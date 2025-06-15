@@ -119,4 +119,10 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("ユーザーが見つかりません: " + username));
     }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public UserDTO getUserProfile(String username) {
+        User user = findUserByUsername(username);
+        return convertToUserDTO(user);
+    }
 }
