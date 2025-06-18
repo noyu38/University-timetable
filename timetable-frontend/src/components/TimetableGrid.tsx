@@ -1,5 +1,6 @@
 import type React from "react";
 import type { DayOfWeek, TimetableSlotDTO } from "../dto/TimetableDTO";
+import "./css/TimetableGrid.css";
 
 interface TimetableGridProps {
     slots: TimetableSlotDTO[];
