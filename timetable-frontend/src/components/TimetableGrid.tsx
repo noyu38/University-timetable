@@ -30,7 +30,7 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots }) => {
             <tbody>
                 {periods.map(period => (
                     <tr key={period}>
-                        <th>{period}限</th>
+                        <th>{period}コマ</th>
                         {days.map(day => {
                             const key = `<span class="math-inline">${day}-</span>${period}`;
                             const slot = slotMap.get(key);
