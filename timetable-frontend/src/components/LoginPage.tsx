@@ -25,7 +25,7 @@ const LoginPage = () => {
             });
 
             // ログインに成功した場合
-            console.log("ログイン成功: ", response.data);
+            console.log("ログイン成功: ", response.data); // response.dataにはバックエンドのJWTResponseDTOが入っている
 
             const token = response.data.token;
             localStorage.setItem("token", token);
