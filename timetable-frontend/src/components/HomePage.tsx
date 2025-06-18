@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext"
 import type { TimetableSlotDTO } from "../dto/TImetableDTO";
 import apiClient from "../services/api";
+import TimetableGrid from "./TimetableGrid";
 
 const HomePage = () => {
     const {setToken} = useAuth();
-
     const [timetable, setTimetable] = useState<TimetableSlotDTO[]>([]);
     const [error, setError] = useState('');
 
@@ -36,10 +36,7 @@ const HomePage = () => {
             <button onClick={handleLogout}>ログアウト</button>
             {error && <p style={{color: "red"}}>{error}</p>}
 
-            <div style={{ textAlign: "left", backgroundColor: "#f0f0f0", padding: "1rem", marginTop: "1rem"}}>
-                <h3>APIから取得したデータ</h3>
-                <pre>{JSON.stringify(timetable, null, 2)}</pre>
-            </div>
+            <TimetableGrid slots={timetable} />
         </div>
     );
 };
