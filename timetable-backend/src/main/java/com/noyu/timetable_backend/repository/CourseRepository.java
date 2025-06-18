@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.noyu.timetable_backend.model.Course;
+import com.noyu.timetable_backend.model.Department;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -32,4 +33,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
      * @return 見つかった授業のリスト
      */
     List<Course> findByNameContaining(String nameKeyword);
+
+    boolean existsByNameAndDepartment(String name, Department department);
 }
