@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext"
-import type { TimetableSlotDTO } from "../dto/TImetableDTO";
+import type { TimetableSlotDTO } from "../dto/TimetableDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
 
