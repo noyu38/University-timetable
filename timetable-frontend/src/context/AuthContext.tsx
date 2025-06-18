@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 interface AuthContextType {
     token: string | null;
@@ -8,7 +8,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // アプリケーション全体をラップして、コンテキストの値を渡すためのプロバイダーコンポーネント
-export const AuthProvider = ({ children }: {children: string | null}) => {
+export const AuthProvider = ({ children }: {children: ReactNode }) => {
     // トークンの状態を管理。初期値としてlocalStorageから読み込む
     const [token, setTokenState] = useState<string | null>(localStorage.getItem("token"));
 
