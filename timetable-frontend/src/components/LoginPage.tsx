@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import apiClient from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     // 入力されたユーザー名を保持
@@ -9,13 +11,15 @@ const LoginPage = () => {
     // エラーメッセージを保持
     const [error, serError] = useState('');
     // 成功メッセージを保持
-    const [successMessage, setSuccessMessage] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
+
+    const {setToken} = useAuth();
+    const navigate = useNavigate();
 
     // フォームが送信されたときの処理
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         serError('');
-        setSuccessMessage('');
 
         try {
             // apiClientを使って、バックエンドの/auth/loginにPOSTリクエストを送信
@@ -25,16 +29,13 @@ const LoginPage = () => {
             });
 
             // ログインに成功した場合
-            console.log("ログイン成功: ", response.data); // response.dataにはバックエンドのJWTResponseDTOが入っている
+            setToken(response.data.token);
 
-            const token = response.data.token;
-            localStorage.setItem("token", token);
-
-            setSuccessMessage("ログインに成功しました");
+            navigate("/");
         } catch (e: any) {
             console.error("ログイン失敗: ", e);
             if (e.response) {
-                serError(e.response.data);
+                serError(e.response.data.message || "ユーザー名またはパスワードが無効です。");
             } else {
                 serError("ログイン中にエラーが発生しました。");
             }
@@ -68,7 +69,6 @@ const LoginPage = () => {
                 <button type="submit">ログイン</button>
             </form>
             {error && <p style={{color: "red"}}>{error}</p>}
-            {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
         </div>
     );
 };
