@@ -1,0 +1,31 @@
+/* src/components/TimetableGrid.css */
+
+.timetable-grid {
+  margin-top: 2rem;
+  border-collapse: collapse; /* 隣接するセルのボーダーを結合 */
+  width: 100%;
+  table-layout: fixed; /* カラム幅を均等に */
+}
+
+.timetable-grid th, .timetable-grid td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: center;
+  height: 80px; /* セルの高さを固定 */
+  vertical-align: top; /* 内容をセル上部に配置 */
+}
+
+.timetable-grid th {
+  background-color: #f2f2f2;
+}
+
+.slot-course {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.slot-details {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 0.3rem;
+}
