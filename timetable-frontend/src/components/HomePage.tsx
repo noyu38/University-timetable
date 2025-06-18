@@ -22,10 +22,9 @@ const HomePage = () => {
             }
         };
 
-        fetchTimetable(); // 関数を実行
+        fetchTimetable();
     }, []); // 第二引数の配列が空のため、一度だけ実行される
 
-    // ログアウト処理
     const handleLogout = () => {
         setToken(null);
     };
