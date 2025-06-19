@@ -40,15 +40,15 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot }) =>
                                 <td key={key}>
                                     {slot ? (
                                         <div>
-                                        <div className="slot-course">{slot.course.name}</div>
-                                        <div className="slot-details">{slot.course.room}</div>
-                                        <div className="slot-details">{slot.course.teacher}</div>
-                                        <button 
-                                            className="delete-slot-btn"
-                                            onClick={() => onDeleteSlot(slot.slotId)}
-                                        >
-                                            ×
-                                        </button>
+                                            <div className="slot-course">{slot.course.name}</div>
+                                            <div className="slot-details">{slot.course.room}</div>
+                                            <div className="slot-details">{slot.course.teacher}</div>
+                                            <button
+                                                className="delete-slot-btn"
+                                                onClick={() => onDeleteSlot(slot.slotId)}
+                                            >
+                                                ×
+                                            </button>
                                         </div>
                                     ) : (
                                         // スロットが空の場合
