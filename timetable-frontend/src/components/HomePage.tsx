@@ -3,11 +3,13 @@ import { useAuth } from "../context/AuthContext"
 import type { TimetableSlotDTO } from "../dto/TimetableDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
+import { CourseDTO } from "../dto/CourseDTO";
 
 const HomePage = () => {
     const { setToken } = useAuth();
     const [timetable, setTimetable] = useState<TimetableSlotDTO[]>([]);
     const [error, setError] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState<CourseDTO | null>(null);
 
     // 一度だけ実行されるuseEffect
     useEffect(() => {
@@ -28,6 +30,35 @@ const HomePage = () => {
     const handleLogout = () => {
         setToken(null);
     };
+
+    // 時間割に授業を追加
+    const handleAddSlot = async (day: string, period: number) => {
+        if (!selectedCourse) {
+            alert("先に追加したい授業をリストから選択してください。");
+            return;
+        }
+
+        try {
+            const requestBody = {
+                courseId: selectedCourse.id,
+                dayOfWeek: day,
+                period: period
+            };
+
+            const response = await apiClient.post<TimetableSlotDTO>("/timetable", requestBody);
+
+            // 画面を更新
+            setTimetable([...timetable, response.data]);
+            setSelectedCourse(null);
+        } catch (e: any) {
+            console.error("授業の登録に失敗しました: ", e);
+            if (e.response && e.response.status === 409) {
+                alert("指定された時間にはすでに授業が登録されています。");
+            } else {
+                alert("授業の登録に失敗しました。");
+            }
+        }
+    }
 
     const handleDeleteSlot = async (slotId: number) => {
         // ユーザーに削除を確認する
@@ -55,7 +86,15 @@ const HomePage = () => {
             <button onClick={handleLogout}>ログアウト</button>
             {error && <p style={{ color: "red" }}>{error}</p>}
 
-            <TimetableGrid slots={timetable} onDeleteSlot={handleDeleteSlot} />
+            <div className="main-container">
+                <div className="timetable-container">
+                    <TimetableGrid
+                        slots={timetable}
+                        onDeleteSlot={handleDeleteSlot}
+                        onAddSlot={handleAddSlot}
+                    />
+                </div>
+            </div>
         </div>
     );
 };
