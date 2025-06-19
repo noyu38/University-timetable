@@ -5,6 +5,7 @@ import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
 import type { CourseDTO } from "../dto/CourseDTO";
 import "./css/HomePage.css";
+import CourseList from "./CourseList";
 
 const HomePage = () => {
     const { setToken } = useAuth();
@@ -93,6 +94,12 @@ const HomePage = () => {
                         slots={timetable}
                         onDeleteSlot={handleDeleteSlot}
                         onAddSlot={handleAddSlot}
+                    />
+                </div>
+                <div className="course-list-wrapper">
+                    <CourseList
+                        selectedCourse={selectedCourse}
+                        onSelectCourse={setSelectedCourse}
                     />
                 </div>
             </div>
