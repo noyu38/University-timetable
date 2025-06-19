@@ -5,9 +5,10 @@ import "./css/TimetableGrid.css";
 interface TimetableGridProps {
     slots: TimetableSlotDTO[];
     onDeleteSlot: (slotId: number) => void;
+    onAddSlot: (day: DayOfWeek, period: number) => void;
 }
 
-const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot }) => {
+const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onAddSlot}) => {
     // 曜日と時限の定義
     const days: DayOfWeek[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
     const periods: number[] = [1, 2, 3, 4, 5];
@@ -37,7 +38,11 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot }) =>
                             const key = `<span class="math-inline">${day}-</span>${period}`;
                             const slot = slotMap.get(key);
                             return (
-                                <td key={key}>
+                                <td 
+                                    key={key}
+                                    onClick={() => !slot && onAddSlot(day, period)}
+                                    style={{cursor: !slot ? "pointer" : "default"}}
+                                >
                                     {slot ? (
                                         <div>
                                             <div className="slot-course">{slot.course.name}</div>
@@ -45,7 +50,10 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot }) =>
                                             <div className="slot-details">{slot.course.teacher}</div>
                                             <button
                                                 className="delete-slot-btn"
-                                                onClick={() => onDeleteSlot(slot.slotId)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onDeleteSlot(slot.slotId)
+                                                }}
                                             >
                                                 ×
                                             </button>

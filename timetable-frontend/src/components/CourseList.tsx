@@ -5,10 +5,11 @@ import apiClient from "../services/api";
 import "./css/CourseList.css";
 
 interface CourseListProps {
-
+    selectedCourse: CourseDTO | null;
+    onSelectCourse: (course: CourseDTO | null) => void;
 }
 
-const CourseList: React.FC<CourseListProps> = () => {
+const CourseList: React.FC<CourseListProps> = ({ selectedCourse, onSelectCourse }) => {
     const [courses, setCourses] = useState<CourseDTO[]>([]);
     const [error, setError] = useState('');
 
@@ -26,13 +27,27 @@ const CourseList: React.FC<CourseListProps> = () => {
         fetchCourses();
     }, []);
 
+    const handleSelect = (course: CourseDTO) => {
+        // もし選択中の授業を再度クリックしたら、選択を解除する
+        if (selectedCourse && selectedCourse.id === course.id) {
+            onSelectCourse(null);
+        } else {
+            onSelectCourse(course);
+        }
+    };
+
     return (
         <div className="course-list-container">
             <h3>履修可能な授業</h3>
+            <p>授業を選んでから、時間割の空きコマをクリックしてください。</p>
             {error && <p style={{color: "red"}}>{error}</p>}
             <ul className="course-list">
                 {courses.map(course => (
-                    <li key={course.id} className="course-item">
+                    <li 
+                        key={course.id} 
+                        className={`course-item ${selectedCourse?.id === course.id ? "selected" : ""}`}
+                        onClick={() => handleSelect(course)}
+                    >
                         <div className="course-name">{course.name}</div>
                         <div className="course-details">
                             {course.teacher} / {course.room} / {course.departmentName}

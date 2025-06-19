@@ -3,7 +3,8 @@ import { useAuth } from "../context/AuthContext"
 import type { TimetableSlotDTO } from "../dto/TimetableDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
-import { CourseDTO } from "../dto/CourseDTO";
+import type { CourseDTO } from "../dto/CourseDTO";
+import "./css/HomePage.css";
 
 const HomePage = () => {
     const { setToken } = useAuth();
