@@ -4,9 +4,10 @@ import "./css/TimetableGrid.css";
 
 interface TimetableGridProps {
     slots: TimetableSlotDTO[];
+    onDeleteSlot: (slotId: number) => void;
 }
 
-const TimetableGrid: React.FC<TimetableGridProps> = ({ slots }) => {
+const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot }) => {
     // 曜日と時限の定義
     const days: DayOfWeek[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
     const periods: number[] = [1, 2, 3, 4, 5];
@@ -42,6 +43,12 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots }) => {
                                         <div className="slot-course">{slot.course.name}</div>
                                         <div className="slot-details">{slot.course.room}</div>
                                         <div className="slot-details">{slot.course.teacher}</div>
+                                        <button 
+                                            className="delete-slot-btn"
+                                            onClick={() => onDeleteSlot(slot.slotId)}
+                                        >
+                                            ×
+                                        </button>
                                         </div>
                                     ) : (
                                         // スロットが空の場合
