@@ -13,7 +13,7 @@ const LoginPage = () => {
     // 成功メッセージを保持
     // const [successMessage, setSuccessMessage] = useState('');
 
-    const {setToken} = useAuth();
+    const { setToken } = useAuth();
     const navigate = useNavigate();
 
     // フォームが送信されたときの処理
@@ -68,7 +68,7 @@ const LoginPage = () => {
                 </div>
                 <button type="submit">ログイン</button>
             </form>
-            {error && <p style={{color: "red"}}>{error}</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );
 };

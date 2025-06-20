@@ -7,7 +7,7 @@ import { ItemTypes } from "../dnd/itemTypes";
 interface TimetableGridProps {
     slots: TimetableSlotDTO[];
     onDeleteSlot: (slotId: number) => void;
-    onAddSlot: (day: DayOfWeek, period: number , courseId: number) => void;
+    onAddSlot: (day: DayOfWeek, period: number, courseId: number) => void;
 }
 
 const TimetableCell: React.FC<{
@@ -16,11 +16,11 @@ const TimetableCell: React.FC<{
     slot: TimetableSlotDTO | undefined;
     onAddSlot: (day: DayOfWeek, period: number, courseId: number) => void;
     onDeleteSlot: (slotId: number) => void;
-}> = ({day, period, slot, onAddSlot, onDeleteSlot}) => {
-    const [{isOver, canDrop}, drop] = useDrop(() => ({
+}> = ({ day, period, slot, onAddSlot, onDeleteSlot }) => {
+    const [{ isOver, canDrop }, drop] = useDrop(() => ({
         accept: ItemTypes.COURSE, // "course" タイプのアイテムのみ受け入れる
         canDrop: () => !slot, // スロットが空の場合のみドロップ可
-        drop: (item: {id: number}) => onAddSlot(day, period, item.id),
+        drop: (item: { id: number }) => onAddSlot(day, period, item.id),
         collect: (monitor) => ({
             isOver: !!monitor.isOver(),
             canDrop: !!monitor.canDrop(),
@@ -30,29 +30,32 @@ const TimetableCell: React.FC<{
     const isActive = isOver && canDrop;
 
     return (
-    <td
-        ref={drop}
-        className={isActive ? "droppable-cell" : ""}
-    >
-        {slot ? (
-            <div>
-                <div className="slot-course">{slot.course.name}</div>
-                <div className="slot-details">{slot.course.room}</div>
-                <div className="slot-details">{slot.course.teacher}</div>
-                <button
-                    className="delete-slot-button"
-                    onClick={(e) => {e.stopPropagation(); onDeleteSlot(slot.slotId)}}
-                >
-                    ×
-                </button>
-            </div>
-        ) : ("")}
-    </td>
-)
+        <td
+            ref={drop}
+            className={isActive ? "droppable-cell" : ""}
+        >
+            {slot ? (
+                <div>
+                    <div className="slot-course">{slot.course.name}</div>
+                    <div className="slot-details">{slot.course.room}</div>
+                    <div className="slot-details">{slot.course.teacher}</div>
+                    <button
+                        className="delete-slot-button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteSlot(slot.slotId)
+                        }}
+                    >
+                        ×
+                    </button>
+                </div>
+            ) : ("")}
+        </td>
+    )
 }
 
 
-const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onAddSlot}) => {
+const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot, onAddSlot }) => {
     // 曜日と時限の定義
     const days: DayOfWeek[] = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
     const periods: number[] = [1, 2, 3, 4, 5];

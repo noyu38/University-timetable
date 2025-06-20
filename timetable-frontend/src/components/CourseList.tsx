@@ -41,7 +41,7 @@ const CourseList: React.FC<CourseListProps> = () => {
         <div className="course-list-container">
             <h3>履修可能な授業</h3>
             <p>授業を時間割にドラッグ＆ドロップしてください。</p>
-            {error && <p style={{color: "red"}}>{error}</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <div className="course-list">
                 {courses.map(course => (
                     <DraggableCourse key={course.id} course={course} />

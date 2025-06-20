@@ -9,9 +9,9 @@ interface DraggableCourseProps {
 
 const DraggableCourse: React.FC<DraggableCourseProps> = ({ course }) => {
     // useDragフック：コンポーネントをドラッグ可能に
-    const [{isDragging}, drag] = useDrag(() => ({
+    const [{ isDragging }, drag] = useDrag(() => ({
         type: ItemTypes.COURSE, // ドラッグするアイテムのタイプを設定
-        item: {id: course.id}, // ドロップ先に渡すデータを設定
+        item: { id: course.id }, // ドロップ先に渡すデータを設定
         collect: (monitor) => ({
             // ドラッグ中かどうかを監視し、isDraggingという変数に格納
             isDragging: !!monitor.isDragging(),
@@ -22,7 +22,7 @@ const DraggableCourse: React.FC<DraggableCourseProps> = ({ course }) => {
         <div
             ref={drag}
             className="course-item"
-            style={{opacity: isDragging ? 0.5 : 1}}
+            style={{ opacity: isDragging ? 0.5 : 1 }}
         >
             <div className="course-name">{course.name}</div>
             <div className="course-details">
