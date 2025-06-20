@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import type { CourseDTO } from "../dto/CourseDTO";
 import apiClient from "../services/api";
 import "./css/CourseList.css";
+import DraggableCourse from "./DraggableCourse";
 
 interface CourseListProps {
-    selectedCourse: CourseDTO | null;
-    onSelectCourse: (course: CourseDTO | null) => void;
+    // selectedCourse: CourseDTO | null;
+    // onSelectCourse: (course: CourseDTO | null) => void;
 }
 
-const CourseList: React.FC<CourseListProps> = ({ selectedCourse, onSelectCourse }) => {
+const CourseList: React.FC<CourseListProps> = () => {
     const [courses, setCourses] = useState<CourseDTO[]>([]);
     const [error, setError] = useState('');
 
@@ -27,34 +28,25 @@ const CourseList: React.FC<CourseListProps> = ({ selectedCourse, onSelectCourse 
         fetchCourses();
     }, []);
 
-    const handleSelect = (course: CourseDTO) => {
-        // もし選択中の授業を再度クリックしたら、選択を解除する
-        if (selectedCourse && selectedCourse.id === course.id) {
-            onSelectCourse(null);
-        } else {
-            onSelectCourse(course);
-        }
-    };
+    // const handleSelect = (course: CourseDTO) => {
+    //     // もし選択中の授業を再度クリックしたら、選択を解除する
+    //     if (selectedCourse && selectedCourse.id === course.id) {
+    //         onSelectCourse(null);
+    //     } else {
+    //         onSelectCourse(course);
+    //     }
+    // };
 
     return (
         <div className="course-list-container">
             <h3>履修可能な授業</h3>
-            <p>授業を選んでから、時間割の空きコマをクリックしてください。</p>
+            <p>授業を時間割にドラッグ＆ドロップしてください。</p>
             {error && <p style={{color: "red"}}>{error}</p>}
-            <ul className="course-list">
+            <div className="course-list">
                 {courses.map(course => (
-                    <li 
-                        key={course.id} 
-                        className={`course-item ${selectedCourse?.id === course.id ? "selected" : ""}`}
-                        onClick={() => handleSelect(course)}
-                    >
-                        <div className="course-name">{course.name}</div>
-                        <div className="course-details">
-                            {course.teacher} / {course.room} / {course.departmentName}
-                        </div>
-                    </li>
+                    <DraggableCourse key={course.id} course={course} />
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext"
 import type { TimetableSlotDTO } from "../dto/TimetableSlotDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
-import type { CourseDTO } from "../dto/CourseDTO";
 import "./css/HomePage.css";
 import CourseList from "./CourseList";
 import { DndProvider } from "react-dnd";
@@ -13,7 +12,7 @@ const HomePage = () => {
     const { setToken } = useAuth();
     const [timetable, setTimetable] = useState<TimetableSlotDTO[]>([]);
     const [error, setError] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState<CourseDTO | null>(null);
+    // const [selectedCourse, setSelectedCourse] = useState<CourseDTO | null>(null);
 
     // 一度だけ実行されるuseEffect
     useEffect(() => {
@@ -36,15 +35,11 @@ const HomePage = () => {
     };
 
     // 時間割に授業を追加
-    const handleAddSlot = async (day: string, period: number) => {
-        if (!selectedCourse) {
-            alert("先に追加したい授業をリストから選択してください。");
-            return;
-        }
+    const handleAddSlot = async (day: string, period: number, courseId: number) => {
 
         try {
             const requestBody = {
-                courseId: selectedCourse.id,
+                courseId: courseId,
                 dayOfWeek: day,
                 period: period
             };
@@ -55,7 +50,7 @@ const HomePage = () => {
 
             // 画面を更新
             setTimetable(currentTimetable => [...currentTimetable, newSlot]);
-            setSelectedCourse(null);
+            // setSelectedCourse(null);
         } catch (e: any) {
             console.error("授業の登録に失敗しました: ", e);
             if (e.response && e.response.status === 409) {
@@ -102,10 +97,7 @@ const HomePage = () => {
                         />
                     </div>
                     <div className="course-list-wrapper">
-                        <CourseList
-                            selectedCourse={selectedCourse}
-                            onSelectCourse={setSelectedCourse}
-                        />
+                        <CourseList />
                     </div>
                 </div>
             </div>

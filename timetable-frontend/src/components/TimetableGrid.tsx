@@ -1,12 +1,56 @@
 import type React from "react";
 import type { DayOfWeek, TimetableSlotDTO } from "../dto/TimetableSlotDTO";
 import "./css/TimetableGrid.css";
+import { useDrop } from "react-dnd";
+import { ItemTypes } from "../dnd/itemTypes";
 
 interface TimetableGridProps {
     slots: TimetableSlotDTO[];
     onDeleteSlot: (slotId: number) => void;
-    onAddSlot: (day: DayOfWeek, period: number) => void;
+    onAddSlot: (day: DayOfWeek, period: number , courseId: number) => void;
 }
+
+const TimetableCell: React.FC<{
+    day: DayOfWeek;
+    period: number;
+    slot: TimetableSlotDTO | undefined;
+    onAddSlot: (day: DayOfWeek, period: number, courseId: number) => void;
+    onDeleteSlot: (slotId: number) => void;
+}> = ({day, period, slot, onAddSlot, onDeleteSlot}) => {
+    const [{isOver, canDrop}, drop] = useDrop(() => ({
+        accept: ItemTypes.COURSE, // "course" タイプのアイテムのみ受け入れる
+        canDrop: () => !slot, // スロットが空の場合のみドロップ可
+        drop: (item: {id: number}) => onAddSlot(day, period, item.id),
+        collect: (monitor) => ({
+            isOver: !!monitor.isOver(),
+            canDrop: !!monitor.canDrop(),
+        }),
+    }));
+
+    const isActive = isOver && canDrop;
+
+    return (
+    <td
+        ref={drop}
+        className={isActive ? "droppable-cell" : ""}
+    >
+        {slot ? (
+            <div>
+                <div className="slot-course">{slot.course.name}</div>
+                <div className="slot-details">{slot.course.room}</div>
+                <div className="slot-details">{slot.course.teacher}</div>
+                <button
+                    className="delete-slot-button"
+                    onClick={(e) => {e.stopPropagation(); onDeleteSlot(slot.slotId)}}
+                >
+                    ×
+                </button>
+            </div>
+        ) : ("")}
+    </td>
+)
+}
+
 
 const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onAddSlot}) => {
     // 曜日と時限の定義
@@ -38,31 +82,14 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onA
                             const key = `${day}-${period}`;
                             const slot = slotMap.get(key);
                             return (
-                                <td 
+                                <TimetableCell
                                     key={key}
-                                    onClick={() => !slot && onAddSlot(day, period)}
-                                    style={{cursor: !slot ? "pointer" : "default"}}
-                                >
-                                    {slot ? (
-                                        <div>
-                                            <div className="slot-course">{slot.course.name}</div>
-                                            <div className="slot-details">{slot.course.room}</div>
-                                            <div className="slot-details">{slot.course.teacher}</div>
-                                            <button
-                                                className="delete-slot-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onDeleteSlot(slot.slotId)
-                                                }}
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        // スロットが空の場合
-                                        ''
-                                    )}
-                                </td>
+                                    day={day}
+                                    period={period}
+                                    slot={slot}
+                                    onAddSlot={onAddSlot}
+                                    onDeleteSlot={onDeleteSlot}
+                                />
                             );
                         })}
                     </tr>
