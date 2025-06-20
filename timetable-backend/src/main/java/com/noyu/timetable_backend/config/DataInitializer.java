@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,42 @@ public class DataInitializer implements CommandLineRunner {
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
     private final CourseRepository courseRepository; // CourseRepositoryを追加
+
+    private static final List<List<String>> CS_COURSES = new ArrayList<>(Arrays.asList(
+            Arrays.asList("アルゴリズムとデータ構造", "共21", "小暮 悟 他"),
+            Arrays.asList("論理回路", "情13", "塩見 彰睦 他"),
+            Arrays.asList("知能科学", "情13", "竹内 勇剛 他")));
+
+    private static final List<List<String>> BI_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> IA_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> KIKAI_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> DENDEN_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> DENBUTU_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> KABAI_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> SUSISU_COURSES = new ArrayList<>(Arrays.asList(
+
+    ));
+
+    private static final List<List<String>> ZENGAKU_COURSES = new ArrayList<>(Arrays.asList(
+            Arrays.asList("中級英語", "S-Port2Fセミナールーム", "柳澤 ナタリー")));
 
     // コンストラクタを修正
     public DataInitializer(FacultyRepository facultyRepository,
@@ -39,27 +76,25 @@ public class DataInitializer implements CommandLineRunner {
         logger.info("データベースの初期化を開始します...");
 
         // --- 学部・学科データの初期化 ---
-        // (この部分は既存のコードのまま)
         if (facultyRepository.count() == 0) {
             logger.info("学部・学科データを登録します。");
-            Faculty faculty1 = new Faculty("文学部");
+            Faculty faculty1 = new Faculty("情報学部");
             Faculty faculty2 = new Faculty("工学部");
-            Faculty faculty3 = new Faculty("経済学部");
 
-            facultyRepository.saveAll(Arrays.asList(faculty1, faculty2, faculty3));
+            facultyRepository.saveAll(Arrays.asList(faculty1, faculty2));
 
-            Department dept1_1 = new Department("日本文学科", faculty1);
-            Department dept1_2 = new Department("英米文学科", faculty1);
-            departmentRepository.saveAll(Arrays.asList(dept1_1, dept1_2));
+            Department dept1_1 = new Department("情報科学科", faculty1);
+            Department dept1_2 = new Department("行動情報学科", faculty1);
+            Department dept1_3 = new Department("情報社会学科", faculty1);
+            departmentRepository.saveAll(Arrays.asList(dept1_1, dept1_2, dept1_3));
 
             Department dept2_1 = new Department("機械工学科", faculty2);
             Department dept2_2 = new Department("電気電子工学科", faculty2);
-            Department dept2_3 = new Department("情報工学科", faculty2);
-            departmentRepository.saveAll(Arrays.asList(dept2_1, dept2_2, dept2_3));
+            Department dept2_3 = new Department("電子物質科学科", faculty2);
+            Department dept2_4 = new Department("化学バイオ工学科", faculty2);
+            Department dept2_5 = new Department("数理システム工学科", faculty2);
+            departmentRepository.saveAll(Arrays.asList(dept2_1, dept2_2, dept2_3, dept2_4, dept2_5));
 
-            Department dept3_1 = new Department("経済学科", faculty3);
-            Department dept3_2 = new Department("経営学科", faculty3);
-            departmentRepository.saveAll(Arrays.asList(dept3_1, dept3_2));
             logger.info("学部・学科データを登録しました。");
         } else {
             logger.info("学部・学科データは既に存在するため、スキップします。");
@@ -67,27 +102,49 @@ public class DataInitializer implements CommandLineRunner {
 
         // --- ここから授業データの初期化を追加 ---
         if (courseRepository.count() == 0) {
-            logger.info("授業データを登録します。");
+            logger.info("静岡大学の授業データを登録します。");
             // 登録済みの学科を取得して、授業に紐付ける
-            Department deptInfo = departmentRepository.findByName("情報工学科").orElse(null);
-            Department deptKeiei = departmentRepository.findByName("経営学科").orElse(null);
+            Department deptCS = departmentRepository.findByName("情報科学科").orElse(null);
+            Department deptBI = departmentRepository.findByName("行動情報学科").orElse(null);
+            Department deptIA = departmentRepository.findByName("情報社会学科").orElse(null);
+            // 機械工学科
+            Department deptKIKAI = departmentRepository.findByName("機械工学科").orElse(null);
+            // 電子電気工学科
+            Department deptDENDEN = departmentRepository.findByName("電子電気工学科").orElse(null);
+            // 電子物質科学科
+            Department deptDENBUTU = departmentRepository.findByName("電子物質科学科").orElse(null);
+            // 化学バイオ工学科
+            Department deptKABAI = departmentRepository.findByName("化学バイオ工学科").orElse(null);
+            // 数理システム工学科
+            Department deptSUSISU = departmentRepository.findByName("数理システム工学科").orElse(null);
 
-            // --- 専門科目 ---
-            if (deptInfo != null) {
-                Course courseInfo1 = new Course("プログラミング基礎 I", "7-101", "山田太郎", deptInfo);
-                Course courseInfo2 = new Course("データ構造とアルゴリズム", "7-203", "鈴木一郎", deptInfo);
-                courseRepository.saveAll(Arrays.asList(courseInfo1, courseInfo2));
+            // 専門科目を登録
+            if (deptCS != null) {
+                registerCourses(CS_COURSES, deptCS);
             }
-            if (deptKeiei != null) {
-                Course courseKeiei1 = new Course("マーケティング論", "3-305", "佐藤花子", deptKeiei);
-                courseRepository.save(courseKeiei1);
-
+            if (deptBI != null) {
+                registerCourses(BI_COURSES, deptBI);
+            }
+            if (deptIA != null) {
+                registerCourses(IA_COURSES, deptBI);
+            }
+            if (deptKIKAI != null) {
+                registerCourses(KIKAI_COURSES, deptKIKAI);
+            }
+            if (deptDENDEN != null) {
+                registerCourses(DENDEN_COURSES, deptDENDEN);
+            }
+            if (deptDENBUTU != null) {
+                registerCourses(DENBUTU_COURSES, deptDENBUTU);
+            }
+            if (deptKABAI != null) {
+                registerCourses(KABAI_COURSES, deptKABAI);
+            }
+            if (deptSUSISU != null) {
+                registerCourses(SUSISU_COURSES, deptSUSISU);
             }
 
             // --- 全学共通科目 (departmentをnullにする) ---
-            Course commonCourse1 = new Course("情報リテラシー", "PC-1", "田中次郎", null);
-            Course commonCourse2 = new Course("統計学入門", "5-101", "高橋三郎", null);
-            courseRepository.saveAll(Arrays.asList(commonCourse1, commonCourse2));
 
             logger.info("授業データを登録しました。");
         } else {
@@ -96,5 +153,13 @@ public class DataInitializer implements CommandLineRunner {
         // --- ここまで授業データの初期化 ---
 
         logger.info("データベースの初期化が完了しました。");
+    }
+
+    // 時間割に授業を登録する処理
+    private void registerCourses(List<List<String>> details, Department dept) {
+        for (List<String> detail : details) {
+            Course course = new Course(detail.get(0), detail.get(1), detail.get(2), dept);
+            courseRepository.save(course);
+        }
     }
 }
