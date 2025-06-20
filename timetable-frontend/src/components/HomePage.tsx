@@ -6,6 +6,8 @@ import TimetableGrid from "./TimetableGrid";
 import type { CourseDTO } from "../dto/CourseDTO";
 import "./css/HomePage.css";
 import CourseList from "./CourseList";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const HomePage = () => {
     const { setToken } = useAuth();
@@ -85,27 +87,29 @@ const HomePage = () => {
     };
 
     return (
-        <div>
-            <h2>ホームページ あなたの時間割</h2>
-            <button onClick={handleLogout}>ログアウト</button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+        <DndProvider backend={HTML5Backend}>
+            <div>
+                <h2>あなたの時間割</h2>
+                <button onClick={handleLogout}>ログアウト</button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
 
-            <div className="main-container">
-                <div className="timetable-container">
-                    <TimetableGrid
-                        slots={timetable}
-                        onDeleteSlot={handleDeleteSlot}
-                        onAddSlot={handleAddSlot}
-                    />
-                </div>
-                <div className="course-list-wrapper">
-                    <CourseList
-                        selectedCourse={selectedCourse}
-                        onSelectCourse={setSelectedCourse}
-                    />
+                <div className="main-container">
+                    <div className="timetable-container">
+                        <TimetableGrid
+                            slots={timetable}
+                            onDeleteSlot={handleDeleteSlot}
+                            onAddSlot={handleAddSlot}
+                        />
+                    </div>
+                    <div className="course-list-wrapper">
+                        <CourseList
+                            selectedCourse={selectedCourse}
+                            onSelectCourse={setSelectedCourse}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        </DndProvider>
     );
 };
 
