@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext"
-import type { TimetableSlotDTO } from "../dto/TimetableDTO";
+import type { TimetableSlotDTO } from "../dto/TimetableSlotDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
 import type { CourseDTO } from "../dto/CourseDTO";
@@ -49,8 +49,10 @@ const HomePage = () => {
 
             const response = await apiClient.post<TimetableSlotDTO>("/timetable", requestBody);
 
+            const newSlot = response.data;
+
             // 画面を更新
-            setTimetable([...timetable, response.data]);
+            setTimetable(currentTimetable => [...currentTimetable, newSlot]);
             setSelectedCourse(null);
         } catch (e: any) {
             console.error("授業の登録に失敗しました: ", e);
