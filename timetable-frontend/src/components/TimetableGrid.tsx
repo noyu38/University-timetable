@@ -16,7 +16,7 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onA
     // スロットのリストを、曜日と時限で検索できるようなデータ構造に変換
     const slotMap = new Map<string, TimetableSlotDTO>();
     slots.forEach(slot => {
-        const key = `<span class="math-inline">\{slot\.dayOfWeek\}\-</span>{slot.period}`;
+        const key = `${slot.dayOfWeek}-${slot.period}`;
         slotMap.set(key, slot);
     });
 
@@ -35,7 +35,7 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot , onA
                     <tr key={period}>
                         <th>{period}コマ</th>
                         {days.map(day => {
-                            const key = `<span class="math-inline">\{day\}\-</span>{period}`;
+                            const key = `${day}-${period}`;
                             const slot = slotMap.get(key);
                             return (
                                 <td 
