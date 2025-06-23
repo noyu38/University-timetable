@@ -25,10 +25,11 @@ public class DataInitializer implements CommandLineRunner {
     private final DepartmentRepository departmentRepository;
     private final CourseRepository courseRepository; // CourseRepositoryを追加
 
-    private static final List<List<String>> CS_COURSES = new ArrayList<>(Arrays.asList(
-            Arrays.asList("アルゴリズムとデータ構造", "共21", "小暮 悟 他"),
-            Arrays.asList("論理回路", "情13", "塩見 彰睦 他"),
-            Arrays.asList("知能科学", "情13", "竹内 勇剛 他")));
+    private static final int COURSE_NAME = 0;
+    private static final int COURSE_ROOM = 1;
+    private static final int COURSE_TEACHER = 2;
+
+    private static final List<List<String>> CS_COURSES = new ArrayList<>(Arrays.asList());
 
     private static final List<List<String>> BI_COURSES = new ArrayList<>(Arrays.asList(
 
@@ -145,6 +146,7 @@ public class DataInitializer implements CommandLineRunner {
             }
 
             // --- 全学共通科目 (departmentをnullにする) ---
+            registerCourses(ZENGAKU_COURSES, null);
 
             logger.info("授業データを登録しました。");
         } else {
@@ -158,7 +160,8 @@ public class DataInitializer implements CommandLineRunner {
     // 時間割に授業を登録する処理
     private void registerCourses(List<List<String>> details, Department dept) {
         for (List<String> detail : details) {
-            Course course = new Course(detail.get(0), detail.get(1), detail.get(2), dept);
+            Course course = new Course(detail.get(COURSE_NAME), detail.get(COURSE_ROOM), detail.get(COURSE_TEACHER),
+                    dept);
             courseRepository.save(course);
         }
     }
