@@ -29,7 +29,10 @@ public class DataInitializer implements CommandLineRunner {
     private static final int COURSE_ROOM = 1;
     private static final int COURSE_TEACHER = 2;
 
-    private static final List<List<String>> CS_COURSES = new ArrayList<>(Arrays.asList());
+    private static final List<List<String>> CS_COURSES = new ArrayList<>(Arrays.asList(
+            Arrays.asList("アルゴリズムとデータ構造", "共21", "小暮 悟 他"),
+            Arrays.asList("論理回路", "情13", "塩見 彰睦 他"),
+            Arrays.asList("知能科学", "情13", "竹内 勇剛 他")));
 
     private static final List<List<String>> BI_COURSES = new ArrayList<>(Arrays.asList(
 
