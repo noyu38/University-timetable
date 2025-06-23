@@ -40,3 +40,4 @@ build/
 
 application.properties
 testuser.txt
+DataInitializer.java
