@@ -21,6 +21,9 @@ public class SignUpRequestDTO {
     @Size(min = 6, max = 100)
     private String password;
 
+    private Long facultyId;
+    private Long departmentId;
+
     public SignUpRequestDTO(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -49,6 +52,22 @@ public class SignUpRequestDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getFacultyId() {
+        return facultyId;
+    }
+
+    public void setFacultyId(Long facultyId) {
+        this.facultyId = facultyId;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
     @Override
