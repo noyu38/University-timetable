@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import apiClient from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     // 入力されたユーザー名を保持
@@ -69,6 +69,9 @@ const LoginPage = () => {
                 <button type="submit">ログイン</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
+            <p>
+                アカウントをお持ちではありませんか？ <Link to="/signup">新規登録はこちら</Link>
+            </p>
         </div>
     );
 };
