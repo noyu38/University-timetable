@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import LoginPage from './components/LoginPage'
 import { AuthProvider, useAuth } from './context/AuthContext';
 import HomePage from './components/HomePage';
+import SignupPage from './components/SignupPage';
 
 function App() {
   return (
@@ -25,6 +26,11 @@ const AppRoutes = () => {
           <Route
             path='/login'
             element={!token ? <LoginPage /> : <Navigate to="/" />}
+          />
+
+          <Route
+            path='/signup'
+            element={!token ? <SignupPage /> : <Navigate to="/" />}
           />
 
           <Route
