@@ -79,11 +79,24 @@ public class UserService {
             throw new UserAlreadyExistsException("エラー: メールアドレス " + signUpRequest.getEmail() + " は既に存在します。");
         }
 
+        // 学部・学科エンティティを取得
+        Faculty faculty = facultyRepository.findById(signUpRequest.getFacultyId())
+                .orElseThrow(() -> new EntityNotFoundException("学部が見つかりません ID: " + signUpRequest.getFacultyId()));
+
+        Department department = departmentRepository.findById(signUpRequest.getDepartmentId())
+                .orElseThrow(() -> new EntityNotFoundException("学科が見つかりません ID: " + signUpRequest.getDepartmentId()));
+
+        if (!department.getFaculty().getId().equals(faculty.getId())) {
+            throw new IllegalArgumentException("選択された学科は、その学部に所属していません。");
+        }
+
         // Userオブジェクトを作成
         User newUser = new User();
         newUser.setUsername(signUpRequest.getUsername());
         newUser.setEmail(signUpRequest.getEmail());
         newUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        newUser.setFaculty(faculty);
+        newUser.setDepartment(department);
 
         // ユーザーをデータベースに保存
         return userRepository.save(newUser);
