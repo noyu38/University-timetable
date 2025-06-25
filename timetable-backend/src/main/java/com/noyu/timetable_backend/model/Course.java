@@ -2,6 +2,8 @@ package com.noyu.timetable_backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -28,6 +30,10 @@ public class Course {
     @Column(length = 50)
     private String teacher; // 教員名
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CourseCategory category;
+
     // 多くの授業が1つの学科に所属するため@ManyToOneを使用する
     // nullable = trueにすることで、全額共通科目など特定の学科に紐づかない授業も登録可能にする
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,10 +44,11 @@ public class Course {
 
     }
 
-    public Course(String name, String room, String teacher, Department department) {
+    public Course(String name, String room, String teacher, CourseCategory category, Department department) {
         this.name = name;
         this.room = room;
         this.teacher = teacher;
+        this.category = category;
         this.department = department;
     }
 
@@ -59,6 +66,10 @@ public class Course {
 
     public String getTeacher() {
         return teacher;
+    }
+
+    public CourseCategory getCategory() {
+        return category;
     }
 
     public Department getDepartment() {
@@ -79,6 +90,10 @@ public class Course {
 
     public void setTeacher(String teacher) {
         this.teacher = teacher;
+    }
+
+    public void setCategory(CourseCategory category) {
+        this.category = category;
     }
 
     public void setDepartment(Department department) {
@@ -107,6 +122,7 @@ public class Course {
                 ", name='" + name + '\'' +
                 ", room='" + room + '\'' +
                 ", teacher='" + teacher + '\'' +
+                ", category=" + category +
                 ", department_id=" + (department != null ? department.getId() : null) +
                 '}';
     }
