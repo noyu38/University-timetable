@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext"
 import type { TimetableSlotDTO } from "../dto/TimetableSlotDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
-import "./css/HomePage.css";
 import CourseList from "./CourseList";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -13,6 +12,7 @@ const HomePage = () => {
     const [timetable, setTimetable] = useState<TimetableSlotDTO[]>([]);
     const [error, setError] = useState('');
     // const [selectedCourse, setSelectedCourse] = useState<CourseDTO | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
     // 一度だけ実行されるuseEffect
     useEffect(() => {
@@ -81,22 +81,44 @@ const HomePage = () => {
         }
     };
 
+    const toggleDrawer = () => {
+        setIsDrawerOpen(prevState => !prevState);
+    };
+
     return (
         <DndProvider backend={HTML5Backend}>
             <div>
-                <h2>あなたの時間割</h2>
-                <button onClick={handleLogout}>ログアウト</button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">あなたの時間割</h2>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+                    >ログアウト</button>
+                </div>
 
-                <div className="main-container">
-                    <div className="timetable-container">
+                {error && <p className="bg-red-100 text-red-700 p-3 rounded-md text-center mb-4">{error}</p>}
+
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
+                    
+                    <div className="lg:col-span-2">
                         <TimetableGrid
                             slots={timetable}
                             onDeleteSlot={handleDeleteSlot}
                             onAddSlot={handleAddSlot}
                         />
                     </div>
-                    <div className="course-list-wrapper">
+                    
+                    <div className="hidden lg:block">
+                        <CourseList />
+                    </div>
+                </div>
+
+                <div className={`fixed bottom-0 left-0 w-full bg-white shadow-[-2px_0_10px_rgba(0,0,0,0.1)] rounded-t-2xl transition-transform duration-300 ease-in-out lg:hidden ${isDrawerOpen ? 'translate-y-0' : 'translate-y-[calc(100%-50px)]'}`}>
+                    <div className="h-[50px] w-full flex justify-center items-center cursor-pointer border-t border-gray-200" onClick={toggleDrawer}>
+                        <span className={`text-2xl text-gray-500 transition-transform duration-300 ${isDrawerOpen ? "rotate-180" : ""}`}>▲</span>
+                    </div>
+                    <div className="p-4 max-h-[40vh] overflow-y-auto">
                         <CourseList />
                     </div>
                 </div>

@@ -2,15 +2,10 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import type { CourseDTO } from "../dto/CourseDTO";
 import apiClient from "../services/api";
-import "./css/CourseList.css";
 import DraggableCourse from "./DraggableCourse";
 
-interface CourseListProps {
-    // selectedCourse: CourseDTO | null;
-    // onSelectCourse: (course: CourseDTO | null) => void;
-}
 
-const CourseList: React.FC<CourseListProps> = () => {
+const CourseList: React.FC = () => {
     const [courses, setCourses] = useState<CourseDTO[]>([]);
     const [error, setError] = useState('');
 
@@ -38,11 +33,11 @@ const CourseList: React.FC<CourseListProps> = () => {
     // };
 
     return (
-        <div className="course-list-container">
-            <h3>履修可能な授業</h3>
-            <p>授業を時間割にドラッグ＆ドロップしてください。</p>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <div className="course-list">
+        <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-lg font-bold mb-2 text-gray-700">履修可能な授業</h3>
+            <p className="text-sm text-gray-500 mb-4">授業を時間割にドラッグ＆ドロップしてください。</p>
+            {error && <p className="text-red-500">{error}</p>}
+            <div className="space-y-2">
                 {courses.map(course => (
                     <DraggableCourse key={course.id} course={course} />
                 ))}

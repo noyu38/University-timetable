@@ -21,12 +21,14 @@ const DraggableCourse: React.FC<DraggableCourseProps> = ({ course }) => {
     return (
         <div
             ref={drag}
-            className="course-item"
-            style={{ opacity: isDragging ? 0.5 : 1 }}
+            className="p-3 bg-gray-50 border border-gray-200 rounded-md cursor-move hover:bg-gray-100 transition-colors"
         >
-            <div className="course-name">{course.name}</div>
-            <div className="course-details">
-                {course.teacher} / {course.room} / {course.departmentName}
+            <div className="font-semibold text-gray-800">{course.name}</div>
+            <div className="text-xs text-gray-500 mt-1">
+                <span>{course.teacher}</span> / <span>{course.room}</span>
+            </div>
+            <div className={`text-xs font-bold mt-1 ${course.departmentId ? "text-blue-600" : "text-green-600"}`}>
+                {course.departmentName}
             </div>
         </div>
     );

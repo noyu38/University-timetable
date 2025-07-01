@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage'
 import { AuthProvider, useAuth } from './context/AuthContext';

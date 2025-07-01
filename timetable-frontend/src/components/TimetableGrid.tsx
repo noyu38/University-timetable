@@ -1,6 +1,5 @@
 import type React from "react";
 import type { DayOfWeek, TimetableSlotDTO } from "../dto/TimetableSlotDTO";
-import "./css/TimetableGrid.css";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../dnd/itemTypes";
 
@@ -32,15 +31,15 @@ const TimetableCell: React.FC<{
     return (
         <td
             ref={drop}
-            className={isActive ? "droppable-cell" : ""}
+            className={`border-l border-gray-200 h-24 p-1 align-top relative transition-colors ${isActive ? "bg-blue-100" : "hover:bg-gray-50"}`}
         >
             {slot ? (
-                <div>
-                    <div className="slot-course">{slot.course.name}</div>
-                    <div className="slot-details">{slot.course.room}</div>
-                    <div className="slot-details">{slot.course.teacher}</div>
+                <div className="bg-gray-200 border border-blue-200 rounded-md p-2 h-full text-xs">
+                    <div className="font-bold text-blue-800">{slot.course.name}</div>
+                    <div className="text-gray-600">{slot.course.room}</div>
+                    <div className="text-gray-600 mt-1">{slot.course.teacher}</div>
                     <button
-                        className="delete-slot-button"
+                        className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-50 hover:opacity-100 transition-opacity"
                         onClick={(e) => {
                             e.stopPropagation();
                             onDeleteSlot(slot.slotId)
@@ -68,37 +67,41 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({ slots, onDeleteSlot, onAd
     });
 
     return (
-        <table className="timetable-grid">
-            <thead>
-                <tr>
-                    <th></th>
-                    {days.map(day => (
-                        <th key={day}>{day.substring(0, 3)}</th> // MON, TUE, …のように表示される
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {periods.map(period => (
-                    <tr key={period}>
-                        <th>{period}コマ</th>
-                        {days.map(day => {
-                            const key = `${day}-${period}`;
-                            const slot = slotMap.get(key);
-                            return (
-                                <TimetableCell
-                                    key={key}
-                                    day={day}
-                                    period={period}
-                                    slot={slot}
-                                    onAddSlot={onAddSlot}
-                                    onDeleteSlot={onDeleteSlot}
-                                />
-                            );
-                        })}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="w-full table-fixed">
+                <thead className="bg-gray-50">
+                    <tr>
+                        <th className="w-16 p-2 border-b border-gray-200"></th>
+                        {days.map(day => (
+                            <th key={day} className="p-2 border-b border-l border-gray-200 text-sm font-semibold text-gray-600">
+                                {day.substring(0, 3)}
+                            </th> // MON, TUE, …のように表示される
+                        ))}
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {periods.map(period => (
+                        <tr key={period} className="border-t border-gray-200">
+                            <th className="p-2 border-r border-gray-200 text-sm font-semibold text-gray-600">{period}コマ</th>
+                            {days.map(day => {
+                                const key = `${day}-${period}`;
+                                const slot = slotMap.get(key);
+                                return (
+                                    <TimetableCell
+                                        key={key}
+                                        day={day}
+                                        period={period}
+                                        slot={slot}
+                                        onAddSlot={onAddSlot}
+                                        onDeleteSlot={onDeleteSlot}
+                                    />
+                                );
+                            })}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 };
 
