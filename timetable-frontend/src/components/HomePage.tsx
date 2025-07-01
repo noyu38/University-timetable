@@ -4,15 +4,25 @@ import type { TimetableSlotDTO } from "../dto/TimetableSlotDTO";
 import apiClient from "../services/api";
 import TimetableGrid from "./TimetableGrid";
 import CourseList from "./CourseList";
-import { DndProvider } from "react-dnd";
+import { DndProvider, useDragLayer } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-const HomePage = () => {
+const HomePageContent = () => {
     const { setToken } = useAuth();
     const [timetable, setTimetable] = useState<TimetableSlotDTO[]>([]);
     const [error, setError] = useState('');
     // const [selectedCourse, setSelectedCourse] = useState<CourseDTO | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+
+    const { isDragging } = useDragLayer((monitor) => ({
+        isDragging: monitor.isDragging(),
+    }));
+
+    useEffect(() => {
+        if (isDragging && isDrawerOpen) {
+            setIsDrawerOpen(false);
+        }
+    }, [isDragging, isDrawerOpen])
 
     // 一度だけ実行されるuseEffect
     useEffect(() => {
@@ -126,5 +136,13 @@ const HomePage = () => {
         </DndProvider>
     );
 };
+
+const HomePage = () => {
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <HomePageContent />
+        </DndProvider>
+    );
+}
 
 export default HomePage;
